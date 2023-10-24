@@ -102,6 +102,14 @@ export const api = createApi({
         };
       },
     }),
+    getGrade: build.mutation({
+      query: () => {
+        return {
+          url: 'grade/grade',
+          method: 'GET',
+        };
+      },
+    }),
   }),
 });
 

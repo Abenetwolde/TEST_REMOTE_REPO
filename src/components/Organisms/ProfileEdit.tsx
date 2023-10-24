@@ -11,7 +11,10 @@ import { get_from_localStorage } from '../../utils/Functions/Get';
 import { useChangePasswordMutation, useChangeProfileMutation } from '../../reduxToolkit/Services/auth'
 import { loginSuccess } from '../../reduxToolkit/Features/auth/authSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Toast from 'react-native-toast-message';
+import { useGetRegionsMutation } from '../../reduxToolkit/Services/region';
+import { useGetGradeMutation } from '../../reduxToolkit/Services/grade';
 interface User {
   gender: string;
   firstName?: string;
@@ -36,9 +39,12 @@ const ProfileEdit: React.FC = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [updateProfile, { isLoading }] = useChangeProfileMutation();
   const [updatePassword,] = useChangePasswordMutation();
-
-  const gradeOptions = ['grade_12_natural', 'grade_8'];
-  const rigionOptions = ['no_region', 'afar'];
+  const [getRegions] = useGetRegionsMutation();
+  const [getGrade] = useGetGradeMutation();
+  const [rigionOptions, setRegionOptions] = useState([]);
+  const [gradeOptions, setgradeOptions] = useState([]);
+  console.log(JSON.stringify(rigionOptions));
+//  const rigionOptions = ['no_region', 'afar'];
 
   const handleUpIconPress = () => {
     const currentIndex = gradeOptions.indexOf(grade);
@@ -48,20 +54,20 @@ const ProfileEdit: React.FC = () => {
 
   const handleDownIconPress = () => {
     const currentIndex = gradeOptions.indexOf(grade);
-    const newIndex = (currentIndex - 1 + gradeOptions.length) % gradeOptions.length;
+    const newIndex = (currentIndex - 1) % gradeOptions.length;
     setGrade(gradeOptions[newIndex]);
 
   };
-  const handleUpIconPressforRigion = () => {
-    const currentIndex = rigionOptions.indexOf(city);
+  const handleUpIconPressforRigion = (city) => {
+    const currentIndex = rigionOptions.findIndex((option) => option.value === city);
     const newIndex = (currentIndex + 1) % rigionOptions.length;
-    setCity(rigionOptions[newIndex]);
+    setCity(rigionOptions[newIndex].value);
   };
 
   const handleDownIconPressforRigion = () => {
-    const currentIndex = rigionOptions.indexOf(city);
+    const currentIndex = rigionOptions.findIndex((option) => option.value === city);
     const newIndex = (currentIndex - 1 + rigionOptions.length) % rigionOptions.length;
-    setCity(rigionOptions[newIndex]);
+    setCity(rigionOptions[newIndex].value);
 
   };
 
@@ -91,12 +97,19 @@ const ProfileEdit: React.FC = () => {
         }
         console.log("updated result", result);
 
-       Toast.show({
+        Toast.show({
           type: 'success',
           text1: 'success',
           text2: 'Profile updated successfuly',
           visibilityTime: 4000
         });
+        setName('')
+        setLame('')
+        setPhone('')
+        setGrade('')
+        setCity('')
+
+
         // navigation.goBack();
       } catch (error) {
         await Toast.show({
@@ -108,7 +121,7 @@ const ProfileEdit: React.FC = () => {
       }
     }
   };
-//password schema
+  //password schema
   const schema = yup.object().shape({
     password: yup
       .string()
@@ -149,6 +162,7 @@ const ProfileEdit: React.FC = () => {
             text2: 'Password updated successfuly',
             visibilityTime: 4000
           });
+         
           // Handle the response accordingly
           console.log('Password changed successfully', response)
           console.log('Password changed successfully');
@@ -164,14 +178,75 @@ const ProfileEdit: React.FC = () => {
 
     }
   }
+
+  // const { data: regions} = useGetRegionsMutation(); // Use the custom mutation hook for fetching regions
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // await refetch();
+        const response = await getRegions();
+        // const fetchedGrade = data;
+        console.log("region", response.data )
+        const tempRegionsList: { label: string; value: string; }[] = [];
+console.log(tempRegionsList)
+        response.data.map((region: {region: string}) => {
+          tempRegionsList.push({
+            label: region.region.toUpperCase(),
+            value: region.region
+          });
+        });
+    
+        setRegionOptions([...tempRegionsList]);
+        // setRegionOptions(response.data);
+        // setGrade(fetchedGrade);
+      } catch (error) {
+        console.error('Error fetching regions:', error);
+      }
+    };
+    const fetchGradeData = async () => {
+      try {
+        // await refetch();
+        const response = await getGrade();
+        // const fetchedGrade = data;
+        console.log("grade", response.data)
+        const tempRegionsList: { label: string; value: string; }[] = [];
+console.log(tempRegionsList)
+        response.data.map((grade: {grade: string}) => {
+          return tempRegionsList.push(
+            grade.grade
+          );
+        });
+    
+        setgradeOptions([...tempRegionsList]);
+
+        console.log(JSON.stringify(tempRegionsList))
+        // setRegionOptions(response.data);
+        // setGrade(fetchedGrade);
+      } catch (error) {
+        console.error('Error fetching regions:', error);
+      }
+    };
+  fetchData()
+    fetchGradeData(); // Call the fetch function
+  }, [])
   return (
     <>
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <TouchableOpacity style={styles.doneContainer} onPress={handleUpdateProfile}>
-            <Text style={styles.doneText}>Done</Text>
-          </TouchableOpacity>
+          {/* back Icon and DoneTExt Container */}
+          <View style={styles.backIconandDoneTExtContainer}>
+            <TouchableOpacity
+              style={styles.iconContainer}
+              touchSoundDisabled
+              onPress={() => navigation.goBack()}>
+              <AntDesign name="left" style={styles.backIcon} size={24} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.doneContainer} onPress={handleUpdateProfile}>
+              <Text style={styles.doneText}>Done</Text>
+            </TouchableOpacity>
+          </View>
 
+          {/* Profile Update Forms */}
           <View style={styles.topFormContainer}>
             <Text style={styles.title}>My profile</Text>
 
@@ -185,14 +260,7 @@ const ProfileEdit: React.FC = () => {
               onChangeText={setLame}
               value={lname}
             />
-            <View style={{
-              flexDirection: 'row', alignItems: 'center', paddingHorizontal: 30,
-              borderWidth: 1,
-              marginVertical: 5,
-              marginHorizontal: 20,
-              borderRadius: 10,
-              borderColor: '#abcef5',
-            }}>
+            <View style={styles.commonTextFeildStyle}>
               <Text style={styles.prefixText}>+251</Text>
               <TextInput
                 style={styles.inputContainer}
@@ -201,14 +269,8 @@ const ProfileEdit: React.FC = () => {
                 autoComplete="tel"
               />
             </View>
-            <View style={{
-              flexDirection: 'row', alignItems: 'center', paddingHorizontal: 30,
-              borderWidth: 1,
-              marginVertical: 5,
-              marginHorizontal: 20,
-              borderRadius: 10,
-              borderColor: '#abcef5',
-            }}>
+
+            <View style={styles.commonTextFeildStyle}>
               <TextInput
                 style={{
                   flex: 1,
@@ -227,14 +289,8 @@ const ProfileEdit: React.FC = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={{
-              flexDirection: 'row', alignItems: 'center', paddingHorizontal: 30,
-              borderWidth: 1,
-              marginVertical: 5,
-              marginHorizontal: 20,
-              borderRadius: 10,
-              borderColor: '#abcef5',
-            }}>
+
+            <View style={styles.commonTextFeildStyle}>
               <TextInput
                 style={{
                   flex: 1,
@@ -254,6 +310,7 @@ const ProfileEdit: React.FC = () => {
               </View>
             </View>
           </View>
+
           {/* password update  */}
           <Formik
             initialValues={{ password: '', newPassword: '', confirmPassword: '' }}
@@ -264,14 +321,7 @@ const ProfileEdit: React.FC = () => {
               <View style={styles.topFormContainer}>
                 <Text style={styles.title}>Update password</Text>
 
-                <View style={{
-                  flexDirection: 'row', alignItems: 'center', paddingHorizontal: 30,
-                  borderWidth: 1,
-                  marginVertical: 5,
-                  marginHorizontal: 20,
-                  borderRadius: 10,
-                  borderColor: '#abcef5',
-                }}>
+                <View style={styles.commonTextFeildStyle}>
                   <TextInput
                     style={{
                       flex: 1,
@@ -303,14 +353,7 @@ const ProfileEdit: React.FC = () => {
                 )}
 
 
-                <View style={{
-                  flexDirection: 'row', alignItems: 'center', paddingHorizontal: 30,
-                  borderWidth: 1,
-                  marginVertical: 5,
-                  marginHorizontal: 20,
-                  borderRadius: 10,
-                  borderColor: '#abcef5',
-                }}>
+                <View style={styles.commonTextFeildStyle}>
                   <TextInput
                     style={{
                       flex: 1,
@@ -340,14 +383,7 @@ const ProfileEdit: React.FC = () => {
                 {errors.newPassword && touched.newPassword && (
                   <Text style={styles.errorText}>{errors.newPassword}</Text>
                 )}
-                <View style={{
-                  flexDirection: 'row', alignItems: 'center', paddingHorizontal: 30,
-                  borderWidth: 1,
-                  marginVertical: 5,
-                  marginHorizontal: 20,
-                  borderRadius: 10,
-                  borderColor: '#abcef5',
-                }}>
+                <View style={styles.commonTextFeildStyle}>
                   <TextInput
                     style={{
                       flex: 1,
@@ -406,6 +442,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingBottom: 25,
   },
+   commonTextFeildStyle : {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingHorizontal: 30,
+    borderWidth: 1,
+    marginVertical: 5,
+    marginHorizontal: 20,
+    borderRadius: 10,
+    borderColor: '#abcef5',
+  },
+  
   doneContainer: {
     alignItems: 'flex-end',
     justifyContent: 'center',
@@ -416,6 +463,8 @@ const styles = StyleSheet.create({
   doneText: {
     color: '#1E90FF',
     fontSize: 20,
+    fontFamily: 'Montserrat-SemiBold',
+
   },
   topFormContainer: {
     width: '94%',
@@ -428,6 +477,7 @@ const styles = StyleSheet.create({
   title: {
     color: '#858585',
     fontSize: 22,
+    fontFamily: 'Montserrat-SemiBold',
     paddingHorizontal: 18,
   },
   inputContiner: {
@@ -485,6 +535,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     color: '#b3b3b3',
+  },
+  iconContainer: {
+    color: "black"
+  },
+  backIcon: {
+    color: "black",
+    fontSize: 28,
+    fontWeight: "bold"
+  },
+  backIconandDoneTExtContainer: {
+    padding: 10,
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
 
 });
