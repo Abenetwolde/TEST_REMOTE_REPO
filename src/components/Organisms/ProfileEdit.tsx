@@ -1,9 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TextInput} from 'react-native';
+import React, {useState} from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import {View} from 'react-native';
 import * as yup from 'yup';
 import {Formik} from 'formik';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '../../reduxToolkit/Store';
