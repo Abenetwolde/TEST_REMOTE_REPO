@@ -45,7 +45,6 @@ export const api = createApi({
     }),
     resendCode: build.mutation<{user: userType}, ResendCodeDataType>({
       query: credentials => {
-        console.log('credentcreateials', credentials); // Add this line to log the credentials
         return {
           url: `user/resend/${credentials.userId}`,
           method: 'POST',
@@ -54,7 +53,6 @@ export const api = createApi({
     }),
     createPassword: build.mutation<{user: userType}, CreatePassworDataType>({
       query: credentials => {
-        console.log('credentcreateials---', credentials); // Add this line to log the credentials
         return {
           url: `user/createpassword/${credentials.userId}`,
           method: 'PUT',
@@ -102,11 +100,26 @@ export const api = createApi({
         };
       },
     }),
+
     getGrade: build.mutation({
       query: () => {
         return {
           url: 'grade/grade',
           method: 'GET',
+        };
+      },
+    }),
+    deleteAccount: build.mutation<
+      {user: userType},
+      {userId: string; token: string}
+    >({
+      query: credentials => {
+        return {
+          url: `user/deleteAccount/${credentials.userId}`,
+          method: 'DELETE',
+          body: {},
+          options: {},
+
         };
       },
     }),
@@ -122,4 +135,5 @@ export const {
   useChangeProfileMutation,
   useChangePasswordMutation,
   useGetRegionsMutation,
+  useDeleteAccountMutation,
 } = api;

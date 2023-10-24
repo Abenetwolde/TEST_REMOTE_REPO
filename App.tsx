@@ -5,30 +5,28 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import React, {useEffect} from 'react';
 import Routes from './src/navigation/Index';
-import {AuthProvider} from './src/context/auth';
 import {Provider} from 'react-redux';
 import store from './src/reduxToolkit/Store';
-import Config from 'react-native-config';
+import {AuthContext} from './src/Realm/model';
+
 function App(): JSX.Element {
+  const {RealmProvider} = AuthContext;
+
   useEffect(() => {
     BootSplash.hide({fade: true});
   }, []);
 
-  useEffect(() => {}, []);
   const Stack = createStackNavigator();
- 
-  console.log('my url ', Config.API_URL);
-  console.log('config ',  Config); 
   return (
-    <NavigationContainer>
-      <GluestackUIProvider config={config.theme}>
-        <AuthProvider>
+    <RealmProvider>
+      <NavigationContainer>
+        <GluestackUIProvider config={config.theme}>
           <Provider store={store}>
             <Routes Stack={Stack} />
           </Provider>
-        </AuthProvider>
-      </GluestackUIProvider>
-    </NavigationContainer>
+        </GluestackUIProvider>
+      </NavigationContainer>
+    </RealmProvider>
   );
 }
 

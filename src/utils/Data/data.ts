@@ -1,20 +1,22 @@
+import {Dimensions} from 'react-native';
+
 type ProfileMenuItems = {
   [key: string]: {
     name: string;
     color: string;
-    navigate:string
+    navigate: string;
   };
 };
 
-type CourseCatagoriesType = string[];
+type TopCatagoriesType = string[];
 
 export const DummyDataScience = [
-  {subjName: 'Math'},
+  {subjName: 'Mathematics'},
   {subjName: 'English'},
   {subjName: 'Biology'},
   {subjName: 'Physics'},
+  {subjName: 'SAT'},
   {subjName: 'Chemistry'},
-  {subjName: 'Civics'},
 ];
 
 export const DummyDataSocial = [
@@ -26,7 +28,12 @@ export const DummyDataSocial = [
   {subjName: 'Economics'},
 ];
 
-export const CourseCatagories: CourseCatagoriesType = ['Study', 'Challenge'];
+export const CourseCatagories: TopCatagoriesType = ['Study', 'Challenge'];
+export const TestQustionsCatagories: TopCatagoriesType = [
+  'Model Questions',
+  'Previous Exams',
+  'Random',
+];
 
 export const ProfileMenuItems: ProfileMenuItems = {
   'Subscription Plan': {
@@ -42,34 +49,87 @@ export const ProfileMenuItems: ProfileMenuItems = {
   'Contact Us': {
     name: 'Contact Us',
     color: '#F5A52D',
-    navigate: 'Profile-Edit',
+    navigate: 'Contact Us',
   },
-  'FAQ': {
+  FAQ: {
     name: 'FAQ',
     color: '#74FF51',
-    navigate: 'Profile-Edit',
+    navigate: 'FAQ',
   },
   'User Guide': {
     name: 'User Guide',
     color: '#74FF51',
-    navigate: 'Profile-Edit',
+    navigate: 'User Guide',
   },
 };
 
 export const ProfileMenuItemsAuth: ProfileMenuItems = {
-  'Profile': {
+  Profile: {
     name: 'Profile',
     color: '#1E90FF',
     navigate: 'Profile-Edit',
   },
-  
+
   ...ProfileMenuItems,
-  'Logout': {
+  Logout: {
     name: 'Logout',
     color: '#B5C3E5',
-    navigate: 'Profile-Edit',
+    navigate: 'Logout',
   },
 };
+export const FAQ = [
+  {
+    id: 1,
+    ques: 'How do i change my profile information',
+    ans: ' You can update your profile information by navigating to the `Profile` section in the menu. Then click on the `profile` button to make changes.',
+  },
+  {
+    id: 2,
+    ques: 'How do i change my profile information',
+    ans: ' You can update your profile information by navigating to the Profile section in the menu. Then click on the profile button to make changes.',
+  },
+  {
+    id: 3,
+    ques: 'How do i change my profile information',
+    ans: ' You can update your profile information by navigating to the Profile section in the menu. Then click on the profile button to make changes.',
+  },
+  {
+    id: 4,
+    ques: 'How do i change my profile information',
+    ans: ' You can update your profile information by navigating to the Profile section in the menu. Then click on the profile button to make changes.',
+  },
+  {
+    id: 5,
+    ques: 'How do i change my profile information',
+    ans: ' You can update your profile information by navigating to the Profile section in the menu. Then click on the profile button to make changes.',
+  },
+  {
+    id: 6,
+    ques: 'How do i change my profile information',
+    ans: ' You can update your profile information by navigating to the Profile section in the menu. Then click on the profile button to make changes.',
+  },
+  {
+    id: 7,
+    ques: 'How do i change my profile information',
+    ans: ' You can update your profile information by navigating to the Profile section in the menu. Then click on the profile button to make changes.',
+  },
+  {
+    id: 8,
+    ques: 'How do i change my profile information',
+    ans: ' You can update your profile information by navigating to the Profile section in the menu. Then click on the profile button to make changes.',
+  },
+  {
+    id: 9,
+    ques: 'How do i change my profile information',
+    ans: ' You can update your profile information by navigating to the Profile section in the menu. Then click on the profile button to make changes.',
+  },
+  {
+    id: 10,
+    ques: 'How do i change my profile information',
+    ans: ' You can update your profile information by navigating to the Profile section in the menu. Then click on the profile button to make changes.',
+  },
+];
+
 export const allowedTrialDays = 3;
 
 export const trialStatus = {
@@ -85,3 +145,26 @@ export const LocalStorageDataKeys = {
   trialStartDate: 'trialStartDate',
   userGrade: 'userGrade',
 };
+
+export const LocalObjectDataKeys = {
+  User: 'User',
+  UserData: 'UserData',
+};
+
+export const CarouselData_guest = [
+  {
+    id: '001',
+  },
+  {
+    id: '002',
+  },
+  {
+    id: '003',
+  },
+  {
+    id: '004',
+  },
+];
+
+export const screenWidth = Dimensions.get('window').width;
+export const screenHeight = Dimensions.get('window').height;

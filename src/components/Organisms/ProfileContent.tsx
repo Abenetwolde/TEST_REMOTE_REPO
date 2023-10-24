@@ -9,50 +9,48 @@ import {
 } from 'react-native';
 import badgeImg from '../../assets/Images/Profile/badge.png';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialIcons  from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MenuItems from '../Molecules/MenuItems';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../reduxToolkit/Store';
-import { useNavigation } from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../reduxToolkit/Store';
+import {useNavigation} from '@react-navigation/native';
 
 const ProfileContent = () => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const navigator = useNavigation();
+  const navigator = useNavigation<any>();
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-      {user && (
+        {user && (
           <View style={styles.profileHeaderContainer}>
-           <TouchableOpacity
-            style={styles.iconContainer}
-            touchSoundDisabled
-            onPress={() => navigator.goBack()}>
-            <AntDesign name="left" style={styles.backIcon} size={24} />
-          </TouchableOpacity>
-          <View>
-            <Text style={styles.userData}>
-              {user ? `${user.firstName} ${user.lastName}` : ''}
-            </Text>
-            <Text style={styles.location}>
-              {user ? `${user.region.region}` : ''}
-            </Text>
+            <TouchableOpacity
+              style={styles.iconContainer}
+              touchSoundDisabled
+              onPress={() => navigator.goBack()}>
+              <AntDesign name="left" style={styles.backIcon} size={24} />
+            </TouchableOpacity>
+            <View>
+              <Text style={styles.userData}>
+                {user ? `${user.firstName} ${user.lastName}` : ''}
+              </Text>
+              <Text style={styles.location}>
+                {user ? `${user.region.region}` : ''}
+              </Text>
             </View>
             <TouchableOpacity
-           
-            touchSoundDisabled
-            onPress={() => navigator.navigate('Profile-Edit')}>
-            <MaterialIcons  name="edit" style={styles.editIcon} size={24} />
-          </TouchableOpacity>
+              touchSoundDisabled
+              onPress={() => navigator.navigate('Profile-Edit')}>
+              <MaterialIcons name="edit" style={styles.editIcon} size={24} />
+            </TouchableOpacity>
           </View>
         )}
         {user && (
           <View style={styles.nameContainer}>
             <View style={styles.activityContainer}>
-              <Text style={styles.name}>
-              Activities
-              </Text>
+              <Text style={styles.name}>Activities</Text>
               <Text style={styles.activity}>
-              You are now in the position of gold to upgrade you have to spent time.
+                You are now in the position of gold to upgrade you have to spent
+                time.
               </Text>
             </View>
             {/* <Text style={styles.name}>
@@ -97,7 +95,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#F5F5F5',
     overflow: 'hidden',
-
   },
   nameContainer: {
     width: '100%',
@@ -107,11 +104,11 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     paddingVertical: 10,
     paddingHorizontal: 30,
-    overflow: "visible",
+    overflow: 'visible',
     position: 'relative', // Add this line to make the container relative
   },
-  activityContainer:{
-    width:"70%",
+  activityContainer: {
+    width: '70%',
     flexDirection: 'column',
     gap: 3,
   },
@@ -121,9 +118,8 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   activity: {
-   
     fontFamily: 'Montserrat-SemiBold',
-//  width:"20%"
+    //  width:"20%"
   },
   badge: {
     justifyContent: 'center',
@@ -132,11 +128,10 @@ const styles = StyleSheet.create({
     position: 'absolute', // Add this line to make the badge absolute
     top: -50, // Adjust the value as needed to position the badge
     right: '1%', // Adjust the value as needed to horizontally position the badge
-     transform: [{ translateX: 12.5 }], // Adjust the value as needed to center the badge horizontally
+    transform: [{translateX: 12.5}], // Adjust the value as needed to center the badge horizontally
     width: 140,
     height: 200,
-    objectFit: "contain"
-
+    objectFit: 'contain',
   },
   adsBtnContainer: {
     flexDirection: 'row',
@@ -162,7 +157,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontFamily: 'Montserrat-Regular',
   },
-  profileHeaderContainer:{
+  profileHeaderContainer: {
     // width: '100%',
     // backgroundColor:"red",
     flexDirection: 'row',
@@ -173,34 +168,34 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
   },
-  iconContainer:{
-color:"black"
+  iconContainer: {
+    color: 'black',
   },
-  backIcon:{
-    color:"black",
+  backIcon: {
+    color: 'black',
     fontSize: 28,
-    fontWeight:"bold"
+    fontWeight: 'bold',
   },
 
-  userData:{
+
+  userData: {
     textAlign: 'center',
     fontSize: 18,
     fontFamily: 'Montserrat-SemiBold',
-   color:"black"
+    color: 'black',
   },
-  location:{
+  location: {
     textAlign: 'center',
     fontSize: 15,
     fontFamily: 'Montserrat-SemiBold',
-   
   },
-  editIcon:{
-    backgroundColor:"white",
-    padding:5,
-    borderRadius:50,
-    color:"black",
+  editIcon: {
+    backgroundColor: 'white',
+    padding: 5,
+    borderRadius: 50,
+    color: 'black',
     fontSize: 28,
-    fontWeight:"bold"
+    fontWeight: 'bold',
   },
 });
 export default ProfileContent;
