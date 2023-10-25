@@ -15,22 +15,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Toast from 'react-native-toast-message';
 import { useGetRegionsMutation } from '../../reduxToolkit/Services/region';
 import { useGetGradeMutation } from '../../reduxToolkit/Services/grade';
-interface User {
-  gender: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
-  grade?: {
-    grade: string;
-  };
-  region?: {
-    region: string;
-  };
-}
+import { userType } from '../../types';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 const ProfileEdit: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const user: User = useSelector((state: RootState) => state.auth.user);
+  const user: userType = useSelector((state: RootState) => state.auth.user);
   const [name, setName] = useState(user.firstName ?? '');
   const [lname, setLame] = useState(user.lastName ?? '');
   const [phone, setPhone] = useState(user.phoneNumber ?? '');
@@ -44,8 +34,9 @@ const ProfileEdit: React.FC = () => {
   const [rigionOptions, setRegionOptions] = useState([]);
   const [gradeOptions, setgradeOptions] = useState([]);
   console.log(JSON.stringify(rigionOptions));
-//  const rigionOptions = ['no_region', 'afar'];
 
+
+  console.log("user", user)
   const handleUpIconPress = () => {
     const currentIndex = gradeOptions.indexOf(grade);
     const newIndex = (currentIndex + 1) % gradeOptions.length;
@@ -108,9 +99,6 @@ const ProfileEdit: React.FC = () => {
         setPhone('')
         setGrade('')
         setCity('')
-
-
-        // navigation.goBack();
       } catch (error) {
         await Toast.show({
           type: 'error',
@@ -143,7 +131,7 @@ const ProfileEdit: React.FC = () => {
       .oneOf([yup.ref('newPassword')], 'Passwords must match'),
   });
 
-  const handleSubmit = async (values) => {
+  const handleSubmitPassword = async (values) => {
 
     if (values.newPassword === values.confirmPassword) {
 
@@ -162,7 +150,7 @@ const ProfileEdit: React.FC = () => {
             text2: 'Password updated successfuly',
             visibilityTime: 4000
           });
-         
+
           // Handle the response accordingly
           console.log('Password changed successfully', response)
           console.log('Password changed successfully');
@@ -179,54 +167,46 @@ const ProfileEdit: React.FC = () => {
     }
   }
 
-  // const { data: regions} = useGetRegionsMutation(); // Use the custom mutation hook for fetching regions
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // await refetch();
         const response = await getRegions();
-        // const fetchedGrade = data;
-        console.log("region", response.data )
+        console.log("region", response.data)
         const tempRegionsList: { label: string; value: string; }[] = [];
-console.log(tempRegionsList)
-        response.data.map((region: {region: string}) => {
+        console.log(tempRegionsList)
+        response.data.map((region: { region: string }) => {
           tempRegionsList.push({
             label: region.region.toUpperCase(),
             value: region.region
           });
         });
-    
+
         setRegionOptions([...tempRegionsList]);
-        // setRegionOptions(response.data);
-        // setGrade(fetchedGrade);
       } catch (error) {
         console.error('Error fetching regions:', error);
       }
     };
     const fetchGradeData = async () => {
       try {
-        // await refetch();
         const response = await getGrade();
         // const fetchedGrade = data;
         console.log("grade", response.data)
-        const tempRegionsList: { label: string; value: string; }[] = [];
-console.log(tempRegionsList)
-        response.data.map((grade: {grade: string}) => {
+        const tempRegionsList: { label: string; }[] = [];
+        console.log(tempRegionsList)
+        response.data.map((grade: { grade: string }) => {
           return tempRegionsList.push(
             grade.grade
           );
         });
-    
-        setgradeOptions([...tempRegionsList]);
 
+        setgradeOptions([...tempRegionsList]);
+        if (grade) return setGrade(tempRegionsList[0])
         console.log(JSON.stringify(tempRegionsList))
-        // setRegionOptions(response.data);
-        // setGrade(fetchedGrade);
       } catch (error) {
         console.error('Error fetching regions:', error);
       }
     };
-  fetchData()
+    fetchData()
     fetchGradeData(); // Call the fetch function
   }, [])
   return (
@@ -315,11 +295,17 @@ console.log(tempRegionsList)
           <Formik
             initialValues={{ password: '', newPassword: '', confirmPassword: '' }}
             validationSchema={schema}
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmitPassword}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <View style={styles.topFormContainer}>
-                <Text style={styles.title}>Update password</Text>
+                <View style={styles.passwordHeader}>
+                  <Text style={styles.title}>Update password</Text>
+                  <View style={{ backgroundColor:"#2196F3", padding:5, height:25, width:25,  borderRadius:50, alignItems:"center", justifyContent:"center"}}> 
+                    <FontAwesome5 name='exclamation' size={15} style={{ transform: [{ rotate: '180deg' }], color:"white" }} />
+                  </View>
+
+                </View>
 
                 <View style={styles.commonTextFeildStyle}>
                   <TextInput
@@ -415,10 +401,12 @@ console.log(tempRegionsList)
                 )}
 
                 <TouchableOpacity
-                  style={[styles.inputContainer, styles.changePassword]}
+                  style={[styles.inputContainer, styles.changePassword,{flexDirection:"row",marginHorizontal:20,  marginBottom:20, alignItems:"center", justifyContent:"center",borderRadius:10}]}
                   onPress={handleSubmit}
                 >
+                                      
                   <Text style={styles.changePasswordText}>Change Password</Text>
+                  <AntDesign name="right" style={{color:"white"}} size={19} />
                 </TouchableOpacity>
               </View>
             )}
@@ -442,17 +430,18 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingBottom: 25,
   },
-   commonTextFeildStyle : {
-    flexDirection: 'row', 
-    alignItems: 'center', 
+  commonTextFeildStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 30,
     borderWidth: 1,
     marginVertical: 5,
     marginHorizontal: 20,
     borderRadius: 10,
     borderColor: '#abcef5',
+    backgroundColor: "white"
   },
-  
+
   doneContainer: {
     alignItems: 'flex-end',
     justifyContent: 'center',
@@ -470,7 +459,7 @@ const styles = StyleSheet.create({
     width: '94%',
     marginLeft: '3%',
     borderRadius: 10,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
     paddingVertical: 10,
     marginBottom: 10,
   },
@@ -490,6 +479,7 @@ const styles = StyleSheet.create({
     borderColor: '#abcef5',
     fontSize: 18,
     color: '#858585',
+    backgroundColor: "white"
   },
   changePassword: {
     backgroundColor: '#1E90FF',
@@ -499,6 +489,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     fontFamily: 'Montserrat-SemiBold',
+  },
+  passwordHeader: {
+    marginHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   prefixContainer: {
     position: 'absolute',
@@ -546,6 +542,7 @@ const styles = StyleSheet.create({
   },
   backIconandDoneTExtContainer: {
     padding: 10,
+    marginHorizontal:10,
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
