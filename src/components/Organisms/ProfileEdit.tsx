@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput } from 'react-native';
+import { Button, ScrollView, StatusBar, StyleSheet, Text, TextInput } from 'react-native';
 import { View } from 'react-native';
 import * as yup from 'yup';
-import { Formik } from 'formik';
+import { Field, Formik } from 'formik';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -21,8 +21,7 @@ const ProfileEdit: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const user: userType = useSelector((state: RootState) => state.auth.user);
-  const [name, setName] = useState(user.firstName ?? '');
-  const [lname, setLame] = useState(user.lastName ?? '');
+  const [fullName, setFullName] = useState((user.firstName || '') + ' ' + (user.lastName || ''));
   const [phone, setPhone] = useState(user.phoneNumber ?? '');
   const [grade, setGrade] = useState(user.grade?.grade ?? '');
   const [city, setCity] = useState(user.region?.region ?? '');
@@ -66,10 +65,11 @@ const ProfileEdit: React.FC = () => {
     const tokenResult = await get_from_localStorage('token');
     if (tokenResult.status && tokenResult.value) {
       const token = tokenResult.value;
-
+      const [firstName, lastName] = fullName.split(' ');
+      console.log("fullname..............", fullName)
       const profileData = {
-        firstName: name,
-        lastName: lname,
+        firstName: firstName,
+        lastName: lastName,
         phoneNumber: phone,
         grade: grade,
         gender: user.gender ?? '',
@@ -94,8 +94,8 @@ const ProfileEdit: React.FC = () => {
           text2: 'Profile updated successfuly',
           visibilityTime: 4000
         });
-        setName('')
-        setLame('')
+        // setName('')
+        setFullName('')
         setPhone('')
         setGrade('')
         setCity('')
@@ -209,8 +209,15 @@ const ProfileEdit: React.FC = () => {
     fetchData()
     fetchGradeData(); // Call the fetch function
   }, [])
+  const ProfileSchema = yup.object().shape({
+    fullName: yup.string().required('Full name is required'),
+    phoneNumber: yup.string().required('Phone number is required'),
+    grade: yup.string().required('Grade is required'),
+    city: yup.string().required('City is required'),
+  });
   return (
     <>
+      <StatusBar hidden={true} />
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* back Icon and DoneTExt Container */}
@@ -229,16 +236,10 @@ const ProfileEdit: React.FC = () => {
           {/* Profile Update Forms */}
           <View style={styles.topFormContainer}>
             <Text style={styles.title}>My profile</Text>
-
             <TextInput
               style={styles.inputContiner}
-              onChangeText={setName}
-              value={name}
-            />
-            <TextInput
-              style={styles.inputContiner}
-              onChangeText={setLame}
-              value={lname}
+              onChangeText={setFullName}
+              value={fullName}
             />
             <View style={styles.commonTextFeildStyle}>
               <Text style={styles.prefixText}>+251</Text>
@@ -290,6 +291,83 @@ const ProfileEdit: React.FC = () => {
               </View>
             </View>
           </View>
+          {/* <Formik
+            initialValues={{
+              fullName: user.firstName || '',
+              phoneNumber: user.phoneNumber || '',
+              grade: user.grade?.grade || '',
+              city: user.region?.region || '',
+            }}
+            validationSchema={ProfileSchema}
+            onSubmit={handleUpdateProfile}
+          >
+            {({ handleSubmit, handleChange, values, touched, errors }) => (
+              <View>
+                <TextInput
+                  style={styles.inputContiner}
+                  placeholder=" Enter Full Name"
+                />
+                {touched.fullName && errors.fullName && <Text>{errors.fullName}</Text>}
+
+                <View style={styles.commonTextFeildStyle}>
+                  <Text style={styles.prefixText}>+251</Text>
+                  <TextInput
+                    style={styles.inputContainer}
+                    placeholder=" Enter Phone Number"
+                    autoComplete="tel"
+                  />
+                </View>
+                {touched.phoneNumber && errors.phoneNumber && <Text>{errors.phoneNumber}</Text>}
+
+                <View style={styles.commonTextFeildStyle}>
+                  <TextInput
+                    style={{
+                      flex: 1,
+                      fontSize: 18,
+                      color: '#858585',
+                    }}
+                    value={grade}
+                    onChangeText={setGrade}
+                    placeholder='Enter Grade'
+                  />
+                  <View style={{ flexDirection: 'column', gap: 1 }}>
+                    <TouchableOpacity onPress={handleUpIconPress}>
+                      <Ionicons name="caret-up-outline" size={20} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleDownIconPress}>
+                      <Ionicons name="caret-down-outline" size={20} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                {touched.grade && errors.grade && <Text style={styles.errorText}>{errors.grade}</Text>}
+
+                <View style={styles.commonTextFeildStyle}>
+                  <TextInput
+                    style={{
+                      flex: 1,
+                      fontSize: 18,
+                      color: '#858585',
+                    }}
+                    // name="city"
+                    placeholder='Enter Region'
+                    value={city}
+                    onChangeText={setCity}
+                  />
+                  <View style={{ flexDirection: 'column', gap: 1 }}>
+                    <TouchableOpacity onPress={handleUpIconPressforRigion}>
+                      <Ionicons name="caret-up-outline" size={20} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleDownIconPressforRigion}>
+                      <Ionicons name="caret-down-outline" size={20} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                {touched.city && errors.city && <Text style={styles.errorText}>{errors.city}</Text>}
+
+                <Button onPress={handleSubmit} title="Update Profile" />
+              </View>
+            )}
+          </Formik> */}
 
           {/* password update  */}
           <Formik
@@ -301,8 +379,8 @@ const ProfileEdit: React.FC = () => {
               <View style={styles.topFormContainer}>
                 <View style={styles.passwordHeader}>
                   <Text style={styles.title}>Update password</Text>
-                  <View style={{ backgroundColor:"#2196F3", padding:5, height:25, width:25,  borderRadius:50, alignItems:"center", justifyContent:"center"}}> 
-                    <FontAwesome5 name='exclamation' size={15} style={{ transform: [{ rotate: '180deg' }], color:"white" }} />
+                  <View style={{ backgroundColor: "#2196F3", padding: 5, height: 25, width: 25, borderRadius: 50, alignItems: "center", justifyContent: "center" }}>
+                    <FontAwesome5 name='exclamation' size={15} style={{ transform: [{ rotate: '180deg' }], color: "white" }} />
                   </View>
 
                 </View>
@@ -401,12 +479,12 @@ const ProfileEdit: React.FC = () => {
                 )}
 
                 <TouchableOpacity
-                  style={[styles.inputContainer, styles.changePassword,{flexDirection:"row",marginHorizontal:20,  marginBottom:20, alignItems:"center", justifyContent:"center",borderRadius:10}]}
+                  style={[styles.inputContainer, styles.changePassword, { flexDirection: "row", marginHorizontal: 20, marginBottom: 20, alignItems: "center", justifyContent: "center", borderRadius: 10 }]}
                   onPress={handleSubmit}
                 >
-                                      
+
                   <Text style={styles.changePasswordText}>Change Password</Text>
-                  <AntDesign name="right" style={{color:"white"}} size={19} />
+                  <AntDesign name="right" style={{ color: "white" }} size={19} />
                 </TouchableOpacity>
               </View>
             )}
@@ -423,8 +501,8 @@ const ProfileEdit: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: '35%',
-    height: '67%',
+    top: '25%',
+    height: '75%',
     width: '100%',
     backgroundColor: '#F5F5F5',
     overflow: 'hidden',
@@ -439,6 +517,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     borderRadius: 10,
     borderColor: '#abcef5',
+    fontFamily: 'PoppinsRegular',
     backgroundColor: "white"
   },
 
@@ -452,21 +531,21 @@ const styles = StyleSheet.create({
   doneText: {
     color: '#1E90FF',
     fontSize: 20,
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'PoppinsRegular',
 
   },
   topFormContainer: {
-    width: '94%',
-    marginLeft: '3%',
+    // width: '94%',
+    // marginLeft: '3%',
     borderRadius: 10,
     // backgroundColor: '#fff',
     paddingVertical: 10,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   title: {
     color: '#858585',
     fontSize: 22,
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'PoppinsRegular',
     paddingHorizontal: 18,
   },
   inputContiner: {
@@ -488,7 +567,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontSize: 18,
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'PoppinsRegular',
   },
   passwordHeader: {
     marginHorizontal: 10,
@@ -542,7 +621,7 @@ const styles = StyleSheet.create({
   },
   backIconandDoneTExtContainer: {
     padding: 10,
-    marginHorizontal:10,
+    marginHorizontal: 10,
     flex: 1,
     flexDirection: "row",
     alignItems: "center",

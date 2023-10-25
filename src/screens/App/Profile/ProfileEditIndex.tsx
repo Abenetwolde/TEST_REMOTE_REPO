@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   imageBg: {
-    height: '35%',
+    height: '25%',
     width: '100%',
     resizeMode: 'cover',
   },
