@@ -13,6 +13,7 @@ import { loginSuccess } from '../../reduxToolkit/Features/auth/authSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Toast from 'react-native-toast-message';
+import { ScaledSheet, ms } from 'react-native-size-matters';
 import { useGetRegionsMutation } from '../../reduxToolkit/Services/region';
 import { useGetGradeMutation } from '../../reduxToolkit/Services/grade';
 import { userType } from '../../types';
@@ -226,7 +227,7 @@ const ProfileEdit: React.FC = () => {
               style={styles.iconContainer}
               touchSoundDisabled
               onPress={() => navigation.goBack()}>
-              <AntDesign name="left" style={styles.backIcon} size={24} />
+              <AntDesign name="left" style={styles.backIcon} size={ms(24)} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.doneContainer} onPress={handleUpdateProfile}>
               <Text style={styles.doneText}>Done</Text>
@@ -255,7 +256,7 @@ const ProfileEdit: React.FC = () => {
               <TextInput
                 style={{
                   flex: 1,
-                  fontSize: 18,
+                  fontSize: ms(18),
                   color: '#858585'
                 }}
                 value={grade}
@@ -498,7 +499,7 @@ const ProfileEdit: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
     position: 'absolute',
     top: '25%',
@@ -506,15 +507,15 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#F5F5F5',
     overflow: 'hidden',
-    paddingBottom: 25,
+    paddingBottom: '25@vs', // Apply verticalScale function on 25
   },
   commonTextFeildStyle: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 30,
+    paddingHorizontal: '30@s', // Apply scale function on 30
     borderWidth: 1,
-    marginVertical: 5,
-    marginHorizontal: 20,
+    marginVertical: '5@vs', // Apply verticalScale function on 5
+    marginHorizontal: '20@s', // Apply scale function on 20
     borderRadius: 10,
     borderColor: '#abcef5',
     fontFamily: 'PoppinsRegular',
@@ -524,39 +525,35 @@ const styles = StyleSheet.create({
   doneContainer: {
     alignItems: 'flex-end',
     justifyContent: 'center',
-    width: '90%',
-    marginLeft: '5%',
-    marginTop: 10,
+    // width: '90%',
+    marginLeft: '5@s', // Apply scale function on 5
+    marginTop: '10@vs', // Apply verticalScale function on 10
   },
   doneText: {
     color: '#1E90FF',
-    fontSize: 20,
+    fontSize: '20@ms', // Apply moderateScale function with resize factor of 0.5 on 20
     fontFamily: 'PoppinsRegular',
 
   },
   topFormContainer: {
-    // width: '94%',
-    // marginLeft: '3%',
     borderRadius: 10,
-    // backgroundColor: '#fff',
-    paddingVertical: 10,
-    // marginBottom: 10,
+    paddingVertical: '1@vs', // Apply verticalScale function on 10
   },
   title: {
     color: '#858585',
-    fontSize: 22,
+    fontSize: '20@ms', // Apply moderateScale function with resize factor of 0.5 on 22
     fontFamily: 'PoppinsRegular',
-    paddingHorizontal: 18,
+    paddingHorizontal: '18@s', // Apply scale function on 18
   },
   inputContiner: {
-    paddingHorizontal: 30,
-    paddingVertical: 10,
+    paddingHorizontal: '30@s', // Apply scale function on 30
+    paddingVertical: '10@vs', // Apply verticalScale function on 10
     borderWidth: 1,
-    marginVertical: 5,
-    marginHorizontal: 20,
-    borderRadius: 10,
+    marginVertical: '5@vs', // Apply verticalScale function on 5
+    marginHorizontal: '20@s', // Apply scale function on 20
+    borderRadius: '10@s',
     borderColor: '#abcef5',
-    fontSize: 18,
+    fontSize: '18@ms', // Apply moderateScale function with resize factor of 0.5 on 18
     color: '#858585',
     backgroundColor: "white"
   },
@@ -566,11 +563,11 @@ const styles = StyleSheet.create({
   changePasswordText: {
     color: '#fff',
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: '18@ms', // Apply moderateScale function with resize factor of 0.5 on 18
     fontFamily: 'PoppinsRegular',
   },
   passwordHeader: {
-    marginHorizontal: 10,
+    marginHorizontal: '10@s', // Apply scale function on 10
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between"
@@ -580,34 +577,31 @@ const styles = StyleSheet.create({
     top: '35%',
     height: '67%',
     width: '100%',
-    // backgroundColor: '#F9FCFF',
     overflow: 'hidden',
-    paddingBottom: 25,
+    paddingBottom: '25@vs', // Apply verticalScale function on 25
     flexDirection: 'row',
     alignItems: 'center',
-
   },
   prefixText: {
-    marginRight: 5,
-    fontSize: 16,
+    marginRight: '5@s', // Apply scale function on 5
+    fontSize: '16@ms', // Apply moderateScale function with resize factor of 0.5 on 16
     fontWeight: 'bold',
   },
   inputContainer: {
-    padding: 10,
-    fontSize: 18,
+    padding: '10@ms', // Apply moderateScale function with resize factor of 0.5 on 10
+    fontSize: '18@ms', // Apply moderateScale function with resize factor of 0.5 on 18
     color: '#858585',
     flex: 1,
   },
   errorText: {
-    fontSize: 15,
+    fontSize: '15@ms', // Apply moderateScale function with resize factor of 0.5 on 15
     color: 'red',
     flex: 1,
   },
   smallBox: {
-    // width: '20%',
     justifyContent: 'center',
     alignItems: 'center',
-    fontSize: 20,
+    fontSize: '20@ms', // Apply moderateScale function with resize factor of 0.5 on 20
     textAlign: 'center',
     color: '#b3b3b3',
   },
@@ -616,12 +610,12 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     color: "black",
-    fontSize: 28,
+    fontSize: '28@ms', // Apply moderateScale function with resize factor of 0.5 on 28
     fontWeight: "bold"
   },
   backIconandDoneTExtContainer: {
-    padding: 10,
-    marginHorizontal: 10,
+    padding: '10@ms', // Apply moderateScale function with resize factor of 0.5 on 10
+    marginHorizontal: '10@s', // Apply scale function on 10
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
